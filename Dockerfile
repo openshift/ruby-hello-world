@@ -1,8 +1,8 @@
-FROM dockerfile/ruby
+FROM openshift/ruby-19-centos
 
-RUN gem install sinatra
+RUN scl enable ruby193 "gem install sinatra"
 ADD app.rb /tmp/app.rb
 
 EXPOSE 8080
-CMD ["/usr/bin/ruby","/tmp/app.rb"]
+CMD scl enable ruby193 "ruby /tmp/app.rb"
 
