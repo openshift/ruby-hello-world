@@ -1,4 +1,4 @@
-FROM openshift/ruby-19-centos
+FROM openshift/ruby-20-centos
 
 RUN scl enable ruby193 "gem install sinatra"
 ADD app.rb /tmp/app.rb
