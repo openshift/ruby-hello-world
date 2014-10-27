@@ -1,11 +1,9 @@
 FROM openshift/ruby-20-centos
 
-# Install mysql client and gems to connect app to database.
-USER root
-RUN yum install -y mysql && gem install sinatra activerecord mysql2 --no-ri --no-rdoc
+RUN gem install sinatra sinatra-activerecord mysql2 --no-ri --no-rdoc
 
-USER ruby
-ADD app.rb /tmp/app.rb
+ADD sinatra_app /tmp/
+WORKDIR /tmp/
 
 EXPOSE 8080
-CMD ["ruby", "/tmp/app.rb"]
+CMD ["ruby", "start.rb"]
