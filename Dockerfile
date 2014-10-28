@@ -10,6 +10,5 @@ ENV DATABASE_SERVICE_IP_ADDR 172.17.42.1
 
 USER ruby
 ADD app.rb /tmp/app.rb
-
 EXPOSE 8080
 ENTRYPOINT ["ruby", "/tmp/app.rb"]
