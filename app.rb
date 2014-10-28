@@ -1,31 +1,12 @@
-require 'active_record'
 require 'sinatra'
 
 set :bind, '0.0.0.0'
-set :port, 8080
-
-if not ("#{ENV["MYSQL_DATABASE"]}".blank? || "#{ENV["MYSQL_ROOT_PASSWORD"]}".blank? || "#{ENV["DATABASE_SERVICE_PORT"]}".blank?)
-
-  while  %x"mysqladmin ping -h #{ENV["DATABASE_SERVICE_IP_ADDR"]} --port=#{ENV["DATABASE_SERVICE_PORT"]} -uroot -p#{ENV["MYSQL_ROOT_PASSWORD"]}".strip != "mysqld is alive"
-    puts "Waiting for database connection...\n"
-    sleep 1
-  end
-
-  configure do
-    ActiveRecord::Base.establish_connection(
-      :adapter  => "mysql2",
-      :host     => "#{ENV["DATABASE_SERVICE_IP_ADDR"]}",
-      :port     => "#{ENV["DATABASE_SERVICE_PORT"]}",
-      :database => "#{ENV["MYSQL_DATABASE"]}",
-      :password => "#{ENV["MYSQL_ROOT_PASSWORD"]}"
-    )
-  end
-  puts "Database connection is OK."
-end
-
+set :port,8080
 get '/' do
   "Hello World!\n"+
-  # ENV values are generated during template processing
-  # and then passed to the container when openshift launches it.
-  "All the environment variables are: #{ENV.map { |k,v| "#{k}=#{v}" }.join("\n")}]\n"
+# ENV values are generated during template processing
+# and then passed to the container when openshift launches it.
+  "User is #{ENV['ADMIN_USERNAME']}\n"+
+  "Password is #{ENV['ADMIN_PASSWORD']}\n"+
+  "DB password is #{ENV['DB_PASSWORD']}\n"
 end
