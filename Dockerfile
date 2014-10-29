@@ -8,4 +8,4 @@ USER ruby
 ADD app.rb /tmp/app.rb
 
 EXPOSE 8080
-ENTRYPOINT ["ruby", "/tmp/app.rb"]
+CMD ["ruby", "/tmp/app.rb"]
