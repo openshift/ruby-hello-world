@@ -24,7 +24,7 @@ if not ("#{ENV["MYSQL_DATABASE"]}".blank? || "#{ENV["MYSQL_ROOT_PASSWORD"]}".bla
 end
 
 get '/' do
-  "Hello World!\n"+
+  "Hello World2!\n"+
   # ENV values are generated during template processing
   # and then passed to the container when openshift launches it.
   "All the environment variables are: #{ENV.map { |k,v| "#{k}=#{v}" }.join("\n")}]\n"
