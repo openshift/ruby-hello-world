@@ -7,7 +7,7 @@ set :port, 8080
 if not ("#{ENV["MYSQL_DATABASE"]}".blank? || "#{ENV["MYSQL_ROOT_PASSWORD"]}".blank? || "#{ENV["DATABASE_SERVICE_HOST"]}".blank?)
 
   while  %x"mysqladmin ping -h #{ENV["DATABASE_SERVICE_HOST"]} --port=#{ENV["DATABASE_SERVICE_PORT"]} -uroot -p#{ENV["MYSQL_ROOT_PASSWORD"]}".strip != "mysqld is alive"
-    puts "Waiting for database connection...\n"
+    puts "Waiting for database connection to #{ENV["DATABASE_SERVICE_HOST"]}:#{ENV["DATABASE_SERVICE_PORT"]} as ...#{ENV["MYSQL_ROOT_PASSWORD"]}\n"
     sleep 1
   end
 
