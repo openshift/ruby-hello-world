@@ -16,12 +16,3 @@ def self.connect_to_database
     return false
   end
 end
-
-configure :development do
-
-  while !self.connect_to_database
-    puts "Connecting to database...\n"
-    sleep 0.1
-  end
-  puts "Connected to database"
-end

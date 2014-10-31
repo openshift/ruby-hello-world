@@ -5,6 +5,21 @@ require_relative 'models'
 set :bind, '0.0.0.0'
 set :port, 8080
 
+configure do
+  puts "Running app file"
+  puts "Create database..."
+  %x"rake db:create"
+  puts "Run migrations..."
+  %x"rake db:migrate"
+  puts "Run app..."
+
+  while !self.connect_to_database
+    puts "Connecting to database...\n"
+    sleep 0.1
+  end
+  puts "Connected to database"
+end
+
 get '/' do
   Timestamp.create(date: Time.now, text: "This is a message from a database query. The last insertion in the database was at")
   "Hello World!\n"+
