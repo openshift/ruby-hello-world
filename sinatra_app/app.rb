@@ -3,7 +3,7 @@ require_relative 'config/environments'
 require_relative 'models'
 
 set :bind, '0.0.0.0'
-set :port, ENV["FRONTEND_SERVICE_PORT"]
+set :port, 8080
 
 get '/' do
   Timestamp.create(date: Time.now, text: "This is a message from a database query. The last insertion in the database was at")
