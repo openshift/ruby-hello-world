@@ -2,7 +2,7 @@ FROM openshift/ruby-20-centos
 
 RUN gem install sinatra sinatra-activerecord mysql2 --no-ri --no-rdoc
 
-ADD sinatra_app /tmp/
+ADD . /tmp/
 
 USER root
 
@@ -13,4 +13,4 @@ USER ruby
 WORKDIR /tmp/
 
 EXPOSE 8080
-CMD ["ruby", "start.rb"]
+CMD ["ruby", "app.rb"]

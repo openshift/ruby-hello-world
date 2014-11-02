@@ -1,6 +1,0 @@
-puts "Create database..."
-%x"rake db:create"
-puts "Run migrations..."
-%x"rake db:migrate"
-puts "Run app..."
-%x"ruby app.rb &"
