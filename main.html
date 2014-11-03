@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Hello from OpenShift v3!</title>
+</head>
+<body>
+    Welcome to an OpenShift v3 Demo App!
+
+
+<form name="myForm" onSubmit="return handleSubmit()">
+   Key: 
+   <input type="text" id="key" name="Key"/>
+   <input type="submit" id="get" name="action" value="Get"/>
+   <input type="submit" id="put" name="action"value="Put"/>
+   <input type="submit" id="delete" name="action" value="Delete"/>
+</form>
+   Value:  
+   <input type="text" id="value" name="value" value="">
+</body>
+
+<script type="text/javascript">
+function handleSubmit()
+      {
+        
+    
+        //document.getElementById("value").value="updated";
+        return false;
+      }
+      
+document.getElementById('get').onclick = function() {
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    xmlHttp.send( null );
+    document.getElementById("value").value=xmlHttp.responseText;
+}      
+
+document.getElementById('put').onclick = function() {
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "POST", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    var params = "value="+document.getElementById("value").value;
+    
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlHttp.setRequestHeader("Content-length", params.length);
+    xmlHttp.setRequestHeader("Connection", "close");
+
+    xmlHttp.send( params );
+    document.getElementById("value").value=xmlHttp.responseText;
+}      
+
+document.getElementById('delete').onclick = function() {
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "DELETE", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    xmlHttp.send( null );
+    document.getElementById("value").value="Key deleted";
+}      
+
+</script>
+
+</html>
