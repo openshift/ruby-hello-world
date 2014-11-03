@@ -1,4 +1,5 @@
 require 'active_record'
 
-class Timestamp < ActiveRecord::Base
+class KeyPair < ActiveRecord::Base
+    self.primary_key='key'
 end
