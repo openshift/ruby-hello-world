@@ -7,6 +7,6 @@ class CreateKeyPair < ActiveRecord::Migration
   end
 
   def down
-    drop_table :keypairs
+    drop_table :key_pairs
   end
 end
