@@ -1,58 +1,85 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Hello from OpenShift v3!</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <title>Hello from OpenShift v3!</title>
 </head>
 <body>
-    Welcome to an OpenShift v3 Demo App!
+  <div class="page-header">
+    <h1> Welcome to an OpenShift v3 Demo App! </h1>
+  </div>
 
+  <div class="container">
+    <h3> Get, edit or delete key-value pairs, for fun. </h3>
+    </br>
+    <form role="form" name="myForm" onSubmit="return handleSubmit()">
+      <div type="text" class="alert alert-warning" id="response" role="alert" style="display:none;"> </div>
+      <div class="form-group">
+        <label for="key"> Key </label>
+        <input type="text" class="form-control" id="key" name="key" value="" placeholder="Example: FirstName">
+      </div>
 
-<form name="myForm" onSubmit="return handleSubmit()">
-   Key: 
-   <input type="text" id="key" name="Key"/>
-   <input type="submit" id="get" name="action" value="Get"/>
-   <input type="submit" id="put" name="action"value="Put"/>
-   <input type="submit" id="delete" name="action" value="Delete"/>
-</form>
-   Value:  
-   <input type="text" id="value" name="value" value="">
+      <div class="form-group">
+        <label for="value">Value</label>
+        <input type="text" id="value" class="form-control" name="value" value="" placeholder="Example: Dan"/>
+      </div>
+
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action type <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#" id="get">Get</a></li>
+          <li><a href="#" id="put">Put</a></li>
+          <li><a href="#" id="delete">Delete</a></li>
+        </ul>
+      </div>
+    </form>
+  </div>
 </body>
 
 <script type="text/javascript">
 function handleSubmit()
       {
-        
-    
-        //document.getElementById("value").value="updated";
         return false;
       }
-      
+
 document.getElementById('get').onclick = function() {
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     xmlHttp.send( null );
-    document.getElementById("value").value=xmlHttp.responseText;
-}      
+    document.getElementById("response").style.display = 'block';
+    document.getElementById("response").innerHTML = xmlHttp.responseText;
+}
 
 document.getElementById('put').onclick = function() {
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "POST", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     var params = "value="+document.getElementById("value").value;
-    
+
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlHttp.setRequestHeader("Content-length", params.length);
     xmlHttp.setRequestHeader("Connection", "close");
 
     xmlHttp.send( params );
-    document.getElementById("value").value=xmlHttp.responseText;
-}      
+    document.getElementById("response").style.display = 'block';
+    document.getElementById("response").innerHTML = xmlHttp.responseText;
+}
 
 document.getElementById('delete').onclick = function() {
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "DELETE", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     xmlHttp.send( null );
-    document.getElementById("value").value="Key deleted";
-}      
+    document.getElementById("response").style.display = 'block';
+    document.getElementById("response").innerHTML = "Key deleted.";
+}
 
 </script>
-
 </html>
