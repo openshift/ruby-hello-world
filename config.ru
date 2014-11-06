@@ -1,5 +1,3 @@
+#\ -p 8080
 require './app'
 run Sinatra::Application
-
-set :port=> 8080
-
