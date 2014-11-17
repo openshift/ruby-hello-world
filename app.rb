@@ -13,9 +13,16 @@ configure do
   %x"rake db:migrate"
   puts "Run app..."
 
-  while !self.connect_to_database
-    puts "Connecting to database...\n"
-    sleep 0.1
+  if ENV['RACK_ENV']=="production"
+    while !self.connect_to_database_prod
+      puts "Connecting to production database...\n"
+      sleep 0.1
+    end
+  else 
+    while !self.connect_to_database_test
+      puts "Connecting to test database...\n"
+      sleep 0.1
+    end
   end
   puts "Connected to database"
 end
