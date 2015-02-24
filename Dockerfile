@@ -1,4 +1,4 @@
-FROM openshift/ruby-20-centos
+FROM openshift/ruby-20-centos7
 
 RUN gem install sinatra sinatra-activerecord mysql2 --no-ri --no-rdoc
 
