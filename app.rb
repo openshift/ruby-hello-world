@@ -5,9 +5,7 @@ require_relative 'models'
 set :bind, '0.0.0.0'
 set :port, 8080
 
-configure do
-  puts "Run app..."
-
+def configure_database
   if ENV['RACK_ENV']=="production"
     while !self.connect_to_database_prod
       puts "Connecting to production database (#{ENV['DATABASE_SERVICE_HOST']})...\n"
@@ -26,8 +24,16 @@ configure do
   %x"rake db:migrate"
 end
 
+configure do
+  puts "Run app..."
+
+  unless ENV["DATABASE_SERVICE_HOST"].nil?
+    configure_database
+  end
+end
+
 get '/' do
-  File.read('main.html')
+  erb :main
 end
 
 get '/keys' do
