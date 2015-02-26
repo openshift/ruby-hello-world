@@ -1,0 +1,2 @@
+# The default environment for this Ruby application is production
+RACK_ENV=production
