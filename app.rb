@@ -10,7 +10,7 @@ configure do
 
   if ENV['RACK_ENV']=="production"
     while !self.connect_to_database_prod
-      puts "Connecting to production database...\n"
+      puts "Connecting to production database (#{ENV['DATABASE_SERVICE_HOST']})...\n"
       sleep 0.1
     end
   else
