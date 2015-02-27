@@ -18,6 +18,11 @@
     <h1> Welcome to an OpenShift v3 Demo App! </h1>
   </div>
 
+  <% if ENV["DATABASE_SERVICE_HOST"].nil? && ENV["DATABASE_TEST_SERVICE_HOST"].nil? %>
+  <div class="container" align=center>
+    <h3>(It looks like the database isn't running.  This isn't going to be much fun.)</h3>
+  </div>
+  <% else %>
   <div class="container">
     <h3> Get, edit or delete key-value pairs, for fun. </h3>
     </br>
@@ -43,6 +48,7 @@
       </div>
     </form>
   </div>
+  <% end %>
 </body>
 
 <script type="text/javascript">
