@@ -27,7 +27,7 @@ end
 configure do
   puts "Run app..."
 
-  unless ENV["DATABASE_SERVICE_HOST"].nil?
+  unless ENV["DATABASE_SERVICE_HOST"].nil? && ENV["DATABASE_TEST_SERVICE_HOST"].nil?
     configure_database
   end
 end
