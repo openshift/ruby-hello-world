@@ -8,12 +8,10 @@ set :port, 8080
 def configure_database
   if ENV['RACK_ENV']=="production"
     while !self.connect_to_database_prod
-      puts "Connecting to production database (#{ENV['DATABASE_SERVICE_HOST']})...\n"
       sleep 0.1
     end
   else
     while !self.connect_to_database_test
-      puts "Connecting to test database...\n"
       sleep 0.1
     end
   end
