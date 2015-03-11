@@ -1,0 +1,4 @@
+This folder can contain scripts that can be used during various points in the
+STI process. For more information on the types of scripts that can be placed
+here, and their required details, please see:
+https://github.com/openshift/source-to-image/blob/master/docs/cli.md#sti-scripts
