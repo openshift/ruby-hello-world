@@ -4,7 +4,14 @@ require_relative 'models'
 
 set :bind, '0.0.0.0'
 set :port, 8080
-
+get '/' do
+  "Hello World! Welcome to the OPenshift Lab 3\n"+
+  #ENV VALUES ARE generated during template processing
+  #and then passed to the container when openshift launches it.
+  "User is #{ENV['ADMIN_USERNAME']}\n+
+  "Password is #{ENV['ADMIN_PASSWORD']\n"+
+  "DB Password is #{ENV['DB_PASSWORD']\n"
+end
 def configure_database
   if ENV['RACK_ENV']=="production"
     while !self.connect_to_database_prod
