@@ -4,7 +4,7 @@ require_relative 'models'
 
 set :bind, '0.0.0.0'
 set :port, 8080
-print "cloudTest"
+print "cloudTest1"
 
 def configure_database
   if ENV['RACK_ENV']=="production"
