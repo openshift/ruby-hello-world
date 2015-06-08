@@ -59,7 +59,7 @@ function handleSubmit()
 
 document.getElementById('get').onclick = function() {
     xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    xmlHttp.open( "GET",window.location.protocol+"//"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     xmlHttp.send( null );
     document.getElementById("response").style.display = 'block';
     document.getElementById("response").innerHTML = xmlHttp.responseText;
@@ -67,7 +67,7 @@ document.getElementById('get').onclick = function() {
 
 document.getElementById('put').onclick = function() {
     xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    xmlHttp.open( "POST", window.location.protocol+"//"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     var params = "value="+document.getElementById("value").value;
 
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -81,7 +81,7 @@ document.getElementById('put').onclick = function() {
 
 document.getElementById('delete').onclick = function() {
     xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "DELETE", "http://"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
+    xmlHttp.open( "DELETE", window.location.protocol+"//"+window.location.hostname+":"+window.location.port+"/keys/"+document.getElementById("key").value, false );
     xmlHttp.send( null );
     document.getElementById("response").style.display = 'block';
     document.getElementById("response").innerHTML = "Key deleted.";
