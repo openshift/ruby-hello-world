@@ -31,10 +31,12 @@ configure do
 end
 
 get '/' do
+  puts "Servicing index request..."
   erb :main
 end
 
 get '/keys' do
+  puts "Retrieving all keys"
   a={}
   KeyPair.all.each do |v|
     a[v.key]=v.value
@@ -43,6 +45,7 @@ get '/keys' do
 end
 
 get '/keys/:id' do
+  puts "Retrieving key #{params[:id]}"
   if KeyPair.exists?(params[:id])
     KeyPair.find(params[:id]).value
   else
@@ -51,8 +54,9 @@ get '/keys/:id' do
 end
 
 post '/keys/:id' do
+  puts "Updating key #{params[:id]} to #{params['value']}"
   if KeyPair.exists?(params[:id])
-    KeyPair.update(params['id'], value: params['value'])
+    KeyPair.update(params[:id], value: params['value'])
     "Key updated"
   else
     KeyPair.create(key:params[:id],value:params['value']).save
@@ -61,6 +65,7 @@ post '/keys/:id' do
 end
 
 delete '/keys/:id' do
+  puts "Deleting key #{params[:id]}"
   if KeyPair.exists?(params[:id])
     v=KeyPair.find(params[:id])
     v.destroy
