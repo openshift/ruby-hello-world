@@ -1,4 +1,4 @@
-source 'http://10.31.32.68:8808/'
+source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-activerecord'
