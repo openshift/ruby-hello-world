@@ -1,0 +1,23 @@
+language: ruby
+sudo: false
+rvm:
+  - 2.2
+  - 2.3
+  - 2.4
+  - 2.5
+before_install:
+  - cp -p Gemfile.lock Gemfile.lock.org
+script:
+  # Gemfile.lock should not include BUNDLED WITH part
+  # to prevent old version Bundler to update the file.
+  # https://github.com/openshift/ruby-hello-world/pull/64#issuecomment-363731682
+  - |
+    if grep '^BUNDLED WITH' Gemfile.lock; then
+      false
+    else
+      true
+    fi
+  # Check Gemfile.lock is not edited because that causes an error
+  # with openshift cluster.
+  - diff Gemfile.lock.org Gemfile.lock
+  - bundle exec rake test
