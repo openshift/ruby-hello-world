@@ -1,4 +1,4 @@
-<% # Handle old behaviour of official mysql image %>
+<%# Handle old behaviour of official mysql image %>
 <% user = ENV.key?("MYSQL_ROOT_PASSWORD") ? "root" : ENV["MYSQL_USER"] %>
 <% password = ENV.key?("MYSQL_ROOT_PASSWORD") ? ENV["MYSQL_ROOT_PASSWORD"] : ENV["MYSQL_PASSWORD"] %>
 development:
