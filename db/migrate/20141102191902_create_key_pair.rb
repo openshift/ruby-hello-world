@@ -1,4 +1,4 @@
-class CreateKeyPair < ActiveRecord::Migration[5.1]
+class CreateKeyPair < ActiveRecord::Migration
   def up
     create_table :key_pairs,  :primary_key => :key do |t|
         t.string :value
