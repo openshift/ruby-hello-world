@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: ${APP_NAME}-pipeline-s2i
+message: Usage oc process -f <TEMPLATE> -p JENKINSFILE_PATH=<jenkinsfilePath> | oc apply -f -
+metadata:
+  name: ${APP_NAME}-pipeline-s2i
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations: {}
+    labels:
+      name: ${APP_NAME}-pipeline-s2i
+    name: ${APP_NAME}-pipeline-s2i
+  spec:
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        env:
+        - name: APP_NAME
+          value: ${APP_NAME}
+        - name: APP_IMAGE
+          value: ${APP_IMAGE}
+        - name: CONTEXTDIR
+          value: ${CONTEXTDIR}
+        - name: GIT_SOURCE_URL
+          value: ${GIT_SOURCE_URL}
+        - name: GIT_SOURCE_REF
+          value: ${GIT_SOURCE_REF}
+        - name: VERSION
+          value: ${VERSION}
+        jenkinsfilePath: ${JENKINSFILE_PATH}
+    triggers:
+    - type: ConfigChange
+parameters:
+- displayName: Application Name
+  name: APP_NAME
+  value: "ruby-hello-world"
+- displayName: Application ImageStream
+  name: APP_IMAGE
+  value: "ruby:2.5"
+- displayName: Git Repository Conetext Directory
+  description: Context directory of the git repository
+  name: CONTEXTDIR
+  value: ""
+- displayName: Git Repository URL
+  description: The URL of the repository with your application source code.
+  name: GIT_SOURCE_URL
+  value: "https://github.com/openshift/ruby-hello-world"
+  required: true
+- displayName: Git Reference
+  name: GIT_SOURCE_REF
+  value: master
+- displayName: ImageStream Tag
+  name: VERSION
+  value: "1.0"
+- displayName: jenkinsfilePath
+  name: JENKINSFILE_PATH
+  value: ""
+  required: true
