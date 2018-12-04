@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: ${APP_NAME}-pipeline-s2i
+message: Usage oc process -f <TEMPLATE> | oc apply -f -
+metadata:
+  name: ${APP_NAME}-pipeline-s2i
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations: {}
+    labels:
+      name: ${APP_NAME}-pipeline-s2i
+    name: ${APP_NAME}-pipeline-s2i
+  spec:
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        env:
+        - name: APP_NAME
+          value: ${APP_NAME}
+        - name: APP_IMAGE
+          value: ${APP_IMAGE}
+        - name: CONTEXTDIR
+          value: ${CONTEXTDIR}
+        - name: GIT_SOURCE_URL
+          value: ${GIT_SOURCE_URL}
+        - name: GIT_SOURCE_REF
+          value: ${GIT_SOURCE_REF}
+        - name: VERSION
+          value: ${VERSION}
+        jenkinsfile: |-
+          pipeline {
+            agent { label 'maven' }
+            environment {
+              version = "${VERSION}"
+              devTag = "${version}-${BUILD_NUMBER}"
+              TOKEN = "/run/secrets/kubernetes.io/serviceaccount/token"
+            }
+            options {
+              timeout(time: 5, unit: 'MINUTES')
+            }
+
+            stages {
+              stage('Variable Check') {
+                steps {
+                  echo "version: ${version}"
+                  echo "devTag: ${devTag}"
+                  sh "printenv"
+                  sh "oc version"
+                }
+              }
+              stage('Build Container Image') {
+                steps {
+                  echo "Building a container image ${devTag}."
+                  script {
+                    // OpenShift Jenkins Pipeline (DSL) Plugin
+                    openshift.withCluster() {
+                      openshift.withProject() {
+                        // Create BuildConfig if it doen't exist or start build if exists
+                        if(!openshift.selector("bc", "${APP_NAME}").exists()) {
+                          // The selector returned from newBuild will select all objects created by the operation
+                          def nb = openshift.newBuild("${GIT_SOURCE_URL}", "--name=${APP_NAME}", "--image-stream=${APP_IMAGE}")
+                        } else {
+                          def nb = openshift.selector("bc", "${APP_NAME}")
+                          nb.startBuild()
+                        }
+                        def nb = openshift.selector("bc", "${APP_NAME}")
+
+                        // Print out information about the objects created by newBuild
+                        echo "newBuild created: ${nb.count()} objects: ${nb.names()}"
+
+                        // Filter non-BuildConfig objects and create selector which will find builds related to the BuildConfig
+                        def buildSelector = nb.narrow("bc").related("builds")
+
+                        // Throw exception after 5 minutes
+                        timeout(5) {
+                          buildSelector.untilEach(1) {
+                            return (it.object().status.phase == "Complete")
+                          }
+                        }
+                        echo "Builds have been completed: ${buildSelector.names()}"
+
+                        // Print a list of the builds which have been created
+                        echo "Build logs for ${buildSelector.names()}:"
+
+                        // Find the bc again, and ask for its logs
+                        def result = nb.narrow("bc").logs()
+
+                        // Each high-level operation exposes stout/stderr/status of oc actions that composed
+                        echo "Result of logs operation:"
+                        echo "  status: ${result.status}"
+                        echo "  stderr: ${result.err}"
+                        echo "  number of actions to fulfill: ${result.actions.size()}"
+                        echo "  first action executed: ${result.actions[0].cmd}"
+
+                        // Tag the ${APP_NAME}:latest image as ${APP_NAME}:${devTag}
+                        openshift.tag("${APP_NAME}:latest", "${APP_NAME}:${devTag}")
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+    triggers:
+    - type: ConfigChange
+parameters:
+- displayName: Application Name
+  name: APP_NAME
+  value: "ruby-hello-world"
+- displayName: Application ImageStream
+  name: APP_IMAGE
+  value: "ruby:2.5"
+- displayName: Git Repository Conetext Directory
+  description: Context directory of the git repository
+  name: CONTEXTDIR
+  value: ""
+- displayName: Git Repository URL
+  description: The URL of the repository with your application source code.
+  name: GIT_SOURCE_URL
+  value: "https://github.com/openshift/ruby-hello-world"
+  required: true
+- displayName: Git Reference
+  name: GIT_SOURCE_REF
+  value: master
+- displayName: ImageStream Tag
+  name: VERSION
+  value: "1.0"
