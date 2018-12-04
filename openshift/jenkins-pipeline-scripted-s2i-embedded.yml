@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: ${APP_NAME}-pipeline-s2i
+message: Usage oc process -f <TEMPLATE> | oc apply -f -
+metadata:
+  name: ${APP_NAME}-pipeline-scripted-s2i-embedded
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations: {}
+    labels:
+      name: ${APP_NAME}-pipeline-scripted-s2i-embedded
+    name: ${APP_NAME}-pipeline-scripted-s2i-embedded
+  spec:
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        env:
+        - name: APP_NAME
+          value: ${APP_NAME}
+        - name: APP_IMAGE
+          value: ${APP_IMAGE}
+        - name: CONTEXTDIR
+          value: ${CONTEXTDIR}
+        - name: GIT_SOURCE_URL
+          value: ${GIT_SOURCE_URL}
+        - name: GIT_SOURCE_REF
+          value: ${GIT_SOURCE_REF}
+        - name: VERSION
+          value: ${VERSION}
+        jenkinsfile: |-
+          pipeline {
+            agent {
+              label 'maven'
+            }
+            environment {
+              version = "${VERSION}"
+              devTag = "${version}-${BUILD_NUMBER}"
+              TOKEN = "/run/secrets/kubernetes.io/serviceaccount/token"
+            }
+            options {
+              timeout(time: 5, unit: 'MINUTES')
+            }
+
+            stages {
+              stage('Variable Check') {
+                steps {
+                  echo "version: ${version}"
+                  echo "devTag: ${devTag}"
+                  sh "printenv"
+                  sh "oc version"
+                }
+              }
+
+              stage('Build Container Image') {
+                steps {
+                  echo "Building a container image ${devTag}."
+                  script {
+                    // No OpenShift Jenkins Pipeline (DSL) Plugin
+                    try {
+                      sh "oc new-build ${GIT_SOURCE_URL} --name=${APP_NAME} --image-stream=${APP_IMAGE}"
+                      echo "currentBuild.result"
+                    } catch (Exception e) {
+                      sh "oc start-build ${APP_NAME}"
+                      echo "currentBuild.result"
+                    } finally {
+                      sh "oc logs -f bc/${APP_NAME}"
+                      // Tag the ${APP_NAME}:latest image as ${APP_NAME}:${devTag}
+                      sh "oc tag ${APP_NAME}:latest ${APP_NAME}:${devTag}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+    triggers:
+    - type: ConfigChange
+parameters:
+- displayName: Application Name
+  name: APP_NAME
+  value: "ruby-hello-world"
+- displayName: Application ImageStream
+  name: APP_IMAGE
+  value: "ruby:2.5"
+- displayName: Git Repository URL
+  description: The URL of the repository with your application source code.
+  name: GIT_SOURCE_URL
+  value: "https://github.com/hashnao/ruby-hello-world"
+  required: true
+- displayName: Git Reference
+  name: GIT_SOURCE_REF
+  value: master
+- displayName: ImageStream Tag
+  name: VERSION
+  value: "1.0"

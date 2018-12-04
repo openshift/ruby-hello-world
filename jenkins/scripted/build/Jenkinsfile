@@ -1,0 +1,44 @@
+pipeline {
+  agent {
+    label 'maven'
+  }
+  environment {
+    version = "${VERSION}"
+    devTag = "${version}-${BUILD_NUMBER}"
+    TOKEN = "/run/secrets/kubernetes.io/serviceaccount/token"
+  }
+  options {
+    timeout(time: 5, unit: 'MINUTES')
+  }
+
+  stages {
+    stage('Variable Check') {
+      steps {
+        echo "version: ${version}"
+        echo "devTag: ${devTag}"
+        sh "printenv"
+        sh "oc version"
+      }
+    }
+
+    stage('Build Container Image') {
+      steps {
+        echo "Building a container image ${devTag}."
+        script {
+          // No OpenShift Jenkins Pipeline (DSL) Plugin
+          try {
+            sh "oc new-build ${GIT_SOURCE_URL} --name=${APP_NAME} --image-stream=${APP_IMAGE}"
+            echo "currentBuild.result"
+          } catch (Exception e) {
+            sh "oc start-build ${APP_NAME}"
+            echo "currentBuild.result"
+          } finally {
+            sh "oc logs -f bc/${APP_NAME}"
+            // Tag the ${APP_NAME}:latest image as ${APP_NAME}:${devTag}
+            sh "oc tag ${APP_NAME}:latest ${APP_NAME}:${devTag}"
+          }
+        }
+      }
+    }
+  }
+}

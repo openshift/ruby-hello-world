@@ -4,15 +4,15 @@ labels:
   template: ${APP_NAME}-pipeline-s2i
 message: Usage oc process -f <TEMPLATE> | oc apply -f -
 metadata:
-  name: ${APP_NAME}-pipeline-s2i
+  name: ${APP_NAME}-pipeline-declarative-s2i-embedded
 objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     annotations: {}
     labels:
-      name: ${APP_NAME}-pipeline-s2i
-    name: ${APP_NAME}-pipeline-s2i
+      name: ${APP_NAME}-pipeline-declarative-s2i-embedded
+    name: ${APP_NAME}-pipeline-declarative-s2i-embedded
   spec:
     strategy:
       type: JenkinsPipeline
@@ -113,14 +113,10 @@ parameters:
 - displayName: Application ImageStream
   name: APP_IMAGE
   value: "ruby:2.5"
-- displayName: Git Repository Conetext Directory
-  description: Context directory of the git repository
-  name: CONTEXTDIR
-  value: ""
 - displayName: Git Repository URL
   description: The URL of the repository with your application source code.
   name: GIT_SOURCE_URL
-  value: "https://github.com/openshift/ruby-hello-world"
+  value: "https://github.com/hashnao/ruby-hello-world"
   required: true
 - displayName: Git Reference
   name: GIT_SOURCE_REF
