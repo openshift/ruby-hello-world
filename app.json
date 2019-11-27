@@ -1,0 +1,7 @@
+{
+  "name": "Ruby Sample",
+  "description": "A barebones Node.js app using Express",
+  "repository": "https://github.com//rizzkhan1/ruby-hello-world",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["rails", "ruby", "static"]
+}
