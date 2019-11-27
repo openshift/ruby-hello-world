@@ -1,4 +1,0 @@
-This folder can contain scripts that can be used during various points in the
-S2I process. For more information on the types of scripts that can be placed
-here, and their required details, please see:
-https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md#s2i-scripts
