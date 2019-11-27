@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  background-color: #0b0c0c;
+}
+
+.deploy-environment {
+  padding: 20px;
+}
+
+.deploy-environment--qa {
+  background-color: #f47738;
+}
+
+.deploy-environment--staging {
+  background-color: #5694ca;
+}
+
+.deploy-environment--production {
+  background-color: #1d70b8;
+}
+
+.govuk-heading-s,
+.deploy-environment a,
+.deploy-environment h2,
+.deploy-environment .govuk-body,
+.deploy-environment .govuk-list {
+  color: #fff;
+}
+
+.app-banner {
+  text-align: center;
+  padding: 50px 0;
+  margin: 0;
+  text-decoration: none;
+}
+
+.app-banner--small {
+  padding: 20px 0;
+}
+
+.app-banner--bad {
+  background-color: #d4351c;
+  color: #fff;
+}
+
+.app-banner--progress {
+  background-color: #ffdd00;
+  color: #0b0c0c;
+}

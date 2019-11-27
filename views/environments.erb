@@ -1,0 +1,22 @@
+<div class='govuk-grid-row'>
+  <% %w[QA Staging Production].each do |environment_name| %>
+  <% environment = environment_name.downcase %>
+  <% latest_build = state.latest_successfull_build_to(environment) %>
+
+  <div class='deploy-environment govuk-grid-column-one-third deploy-environment--<%= environment %>'>
+    <h2 class='govuk-heading-xl govuk-!-margin-bottom-3'><%= environment_name %></h2>
+
+    <div class='govuk-body govuk-!-font-size-27'>
+      last deploy at
+      <%= DateTime.strptime(latest_build.start_time, '%m/%d/%Y %H:%M%p').strftime('%l:%M%P on %A %e %b %Y') %>
+      by <%= latest_build.deployer_name %>
+    </div>
+
+    <div class='govuk-body'>
+      Current version: <code><a href='<%= "https://github.com/DFE-Digital/apply-for-postgraduate-teacher-training/commit/#{latest_build.commit_sha}" %>'><%= latest_build.commit_sha[0..6] %></a></code>
+    </div>
+
+    <%= erb :deploy, locals: { environment: environment, state: state, latest_build: latest_build } %>
+  </div>
+  <% end %>
+</div>

@@ -1,0 +1,67 @@
+<% if environment == 'qa' %>
+  <% prs = Diff.pull_requests_between('master', state.latest_successfull_build_to('qa').commit_sha) %>
+
+  <% if prs.size == 0 %>
+    <div class='govuk-body'>
+      👌 All of the PRs on master are deployed
+    </div>
+  <% else %>
+    <div class='govuk-heading-s'><%= prs.size %> PRs behind master</div>
+
+    <div class='govuk-body'>
+      The following PRs haven't been deployed to QA yet (<a href='<%= latest_build.diff_against_url('master') %>' class='govuk-!-font-size-19'>see the full diff of QA against master</a>):
+    </div>
+
+    <ol class='govuk-list govuk-list--number govuk-body-s'>
+      <% prs.each do |author, title| %>
+        <li><%= title %> (<%= author %>)</li>
+      <% end %>
+    </ol>
+  <% end %>
+<% elsif environment == 'staging' %>
+  <% prs = Diff.pull_requests_between(state.latest_successfull_build_to('qa').commit_sha, state.latest_successfull_build_to('staging').commit_sha) %>
+
+  <% if prs.size == 0 %>
+    <div class='govuk-body'>
+      👌 Staging is up to date with QA
+    </div>
+  <% else %>
+    <div class='govuk-heading-s'><%= prs.size %> PRs behind QA</div>
+
+    <div class='govuk-body'>
+      The following PRs haven't been deployed to staging yet (<a href='<%= latest_build.diff_against_url(state.latest_successfull_build_to('qa').commit_sha) %>' class='govuk-!-font-size-19'>see the full diff of Staging against QA</a>):
+    </div>
+
+    <ol class='govuk-list govuk-list--number govuk-body-s'>
+      <% prs.each do |author, title| %>
+        <li><%= title %> (<%= author %>)</li>
+      <% end %>
+    </ol>
+
+    <label class="govuk-label" style='color: #fff;'>Commit to use for deploy:</label>
+    <input value='<%= state.latest_successfull_build_to('qa').commit_sha %>' class='govuk-input' %>
+  <% end %>
+<% elsif environment == 'production' %>
+  <% prs = Diff.pull_requests_between(state.latest_successfull_build_to('staging').commit_sha, state.latest_successfull_build_to('production').commit_sha) %>
+
+  <% if prs.size == 0 %>
+    <div class='govuk-body'>
+      👌 Production is up to date with Staging
+    </div>
+  <% else %>
+    <div class='govuk-heading-s'><%= prs.size %> PRs behind Staging</div>
+
+    <div class='govuk-body'>
+      The following PRs haven't been deployed to production yet (<a href='<%= latest_build.diff_against_url(state.latest_successfull_build_to('staging').commit_sha) %>' class='govuk-!-font-size-19'>see the full diff of Production against Staging</a>):
+    </div>
+
+    <ol class='govuk-list govuk-list--number govuk-body-s'>
+      <% prs.each do |author, title| %>
+        <li><%= title %> (<%= author %>)</li>
+      <% end %>
+    </ol>
+
+    <label class="govuk-label" style='color: #fff;'>Commit to use for deploy:</label>
+    <input value='<%= state.latest_successfull_build_to('staging').commit_sha %>' class='govuk-input' %>
+  <% end %>
+<% end %>

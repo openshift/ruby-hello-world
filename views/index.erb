@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Apply ops dashboard</title>
+    <link rel='stylesheet' href='/govuk-frontend-3.4.0.min.css'>
+    <link rel='stylesheet' href='/styles.css'>
+    <meta name="robots" content="noindex">
+  </head>
+  <body>
+    <%= erb :banners, locals: { state: state } %>
+    <%= erb :environments, locals: { state: state } %>
+    <script src="/main.js" charset="utf-8"></script>
+  </body>
+</html>

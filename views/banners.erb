@@ -1,0 +1,48 @@
+<% if state.master_broken? %>
+<div class='govuk-grid-row'>
+  <a href='https://github.com/DFE-Digital/apply-for-postgraduate-teacher-training/commits/master' class='govuk-heading-xl app-banner app-banner--bad'>
+    🚨 Master is broken 🚨
+  </a>
+</div>
+<% end %>
+
+<% if state.deploying_to_staging? %>
+<div class='govuk-grid-row'>
+  <a href='<%= state.latest_build_to('staging').link %>' class='govuk-heading-xl app-banner app-banner--progress'>
+    🐓 <%= state.latest_build_to('staging').deployer_name %> is deploying to staging!
+  </a>
+</div>
+<% end %>
+
+<% if state.deploying_to_production? %>
+<div class='govuk-grid-row'>
+  <a href='<%= state.latest_build_to('production').link %>' class='govuk-heading-xl app-banner app-banner--progress'>
+    🕺 <%= state.latest_build_to('production').deployer_name %> is deploying to production!
+  </a>
+</div>
+<% elsif state.staging_and_production_not_in_sync? %>
+<div class='govuk-grid-row'>
+  <h2 class='govuk-heading-xl app-banner app-banner--progress'>
+    👮‍♀️ Staging and production not in sync
+    <div class='govuk-body'>
+      This probably means that a deploy is in progress and staging is being tested
+    </div>
+  </h2>
+</div>
+<% end %>
+
+<% if state.deploy_to_production_failed? %>
+<div class='govuk-grid-row'>
+  <a href='<%= state.latest_build_to('production').link %>' class='govuk-heading-xl app-banner app-banner--bad'>
+    💔 Deploy to production failed
+  </a>
+</div>
+<% end %>
+
+<% if state.deploying_to_qa? %>
+<div class='govuk-grid-row' style='margin-top:1px;'>
+  <a href='<%= state.latest_build_to('qa').link %>' class='govuk-heading-m app-banner app-banner--small app-banner--progress'>
+    Deploy to QA in progress
+  </a>
+</div>
+<% end %>
