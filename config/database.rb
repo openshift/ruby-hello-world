@@ -19,7 +19,8 @@ def self.connect_to_database_prod
     ActiveRecord::Base.establish_connection(config)
 
     ActiveRecord::Base.connection.active?
-
+    
+    
   rescue Exception => e
     if not /Can't connect to MySQL server/ =~ e.message
       puts e.message
