@@ -5,6 +5,8 @@ require_relative 'models'
 set :bind, '0.0.0.0'
 set :port, 8080
 
+set :app_file, __FILE__
+
 def configure_database
   if ENV['RACK_ENV']=="production"
     while !self.connect_to_database_prod
